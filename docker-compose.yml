@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    image: jevnatureimage
+    env_file: .env # TYPESAFE_API_KEY, JEV_MODEL; supplied at runtime, never baked into the image
+    environment:
+      PORT: "3001"
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
